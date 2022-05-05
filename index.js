@@ -34,7 +34,7 @@ const jiraUrl = core.getInput('JIRA_URL', { required: true });
 const jiraEmail = core.getInput('JIRA_EMAIL', { required: true });
 const jiraToken = core.getInput('JIRA_TOKEN', { required: true });
 const jiraProject = core.getInput('JIRA_PROJECT', { required: true });
-const regex = `${jiraProject}-\\d+`;
+const regex = new RegExp(`${jiraProject}-\\d+`);
 
 const jiraObj = jira(jiraUrl, jiraEmail, jiraToken);
 console.log(Object.keys(github.context.payload));
@@ -55,7 +55,7 @@ function run() {
       return;
     }
 
-    const regex_match = pr_title.exec(regex);
+    const regex_match = regex.exec(pr_title);
     const ticket_id = regex_match && regex_match.length && regex_match[0];
 
     // Fail the action if the PR title doesn't match the regex
