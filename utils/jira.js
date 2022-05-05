@@ -33,8 +33,17 @@ function jira(jiraUrl, email, apiToken) {
 
     try {
       const response = await fetch(endPoint, requestPayload);
-      const json = await response.json();
-      return json;
+      let responseObj = {};
+      if (
+        (response.headers.get('content-type') || '').includes(
+          'application/json'
+        )
+      ) {
+        responseObj = await response.json();
+      } else {
+        responseObj = await response.text();
+      }
+      return responseObj;
     } catch (err) {
       console.log(err.message);
       return null;
@@ -60,8 +69,8 @@ function jira(jiraUrl, email, apiToken) {
       };
       return jiraConnect({
         pathname: `${commonPath}/issue/${ticketId}/transitions`,
-        method: 'GET',
-        // body,
+        method: 'POST',
+        body,
       });
     },
   };

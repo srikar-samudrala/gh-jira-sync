@@ -20,14 +20,6 @@ const JIRA_READY_FOR_INTEGRATION = 'READY FOR INTEGRATION';
 const JIRA_DEV_COMPLETE = 'DEV COMPLETE';
 const JIRA_CODE_REVIEW = 'CODE REVIEW';
 const JIRA_UAT_FEATURE_TESTING = 'UAT/FEATURE TESTING';
-const JIRA_STATUS = {
-  JIRA_DEV_IN_PROGRESS,
-  JIRA_READY_FOR_DEV,
-  JIRA_READY_FOR_INTEGRATION,
-  JIRA_DEV_COMPLETE,
-  JIRA_CODE_REVIEW,
-  JIRA_UAT_FEATURE_TESTING,
-};
 
 const githubToken = core.getInput('GITHUB_TOKEN', { required: true });
 const jiraUrl = core.getInput('JIRA_URL', { required: true });
@@ -129,6 +121,27 @@ async function run() {
     if (current_jira_status.toLowerCase() === new_jira_status.toLowerCase()) {
       core.info('Status already set');
       return;
+    }
+
+    const transitionsResponse = await jiraObj.fetchJiraTransitions(ticket_id);
+
+    if (!transitionsResponse || transitionsResponse.transitions.length === 0) {
+      core.info('No transitions found. Unable to set status');
+      return;
+    }
+
+    const transition_obj = transitionsResponse.transitions.find(
+      (transition) =>
+        transition.to.name.toLowerCase() === new_jira_status.toLowerCase()
+    );
+    if (transition_obj.id) {
+      const triggerJiraTransitionRes = await jiraObj.triggerJiraTransition(
+        ticket_id,
+        transition_obj.id
+      );
+      core.info(`Jira transition triggered: ${triggerJiraTransitionRes}`);
+    } else {
+      core.info('No matching transition id found. Unable to set status');
     }
   } catch (err) {
     console.log(`Error: ${err.message}`);
