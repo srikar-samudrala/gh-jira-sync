@@ -45,6 +45,8 @@ function run() {
   try {
     const action = github.context.payload.action;
     const pull_request = github.context.payload.pull_request;
+    const review =
+      (github.context.payload && github.context.payload.review) || {};
     const pr_title = pull_request.title;
     const labels = pull_request.labels.map((label) => label.name);
     const matching_labels = GH_LABELS.filter((label) => labels.includes(label));
@@ -81,7 +83,7 @@ function run() {
         if (
           !matching_labels.includes(GH_DEV_APPROVED) &&
           !matching_labels.includes(GH_QC_APPROVED) &&
-          pull_request.review.state === 'changes_requested' &&
+          review.state === 'changes_requested' &&
           !pull_request.merged_at
         ) {
           new_jira_status = JIRA_DEV_IN_PROGRESS;
