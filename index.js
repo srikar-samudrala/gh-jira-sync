@@ -10,4 +10,6 @@ const { jira } = require('./utils/jira');
 
 // const jiraObj = jira(jiraUrl, jiraEmail, jiraToken);
 // jiraObj.fetchStatusCategories('12070', 281);
-console.log(Object.keys(github));
+console.log(Object.keys(github.context));
+console.log(Object.keys(github.context.payload));
+console.log(JSON.stringify(github.context.payload, null, 2));
