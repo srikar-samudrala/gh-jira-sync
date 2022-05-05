@@ -2,6 +2,7 @@
 
 This action transitions the Jira status based on the Github labels
 
+
 ## Inputs
 
 ### `GITHUB_ACTION`
