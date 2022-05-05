@@ -6,6 +6,7 @@ This action transitions the Jira status based on the Github labels
 
 ### `GITHUB_ACTION`
 
+
 **Required**
 
 ### `TRIAL_RUN`
