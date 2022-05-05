@@ -9,6 +9,7 @@ on:
         closed,
         reopened,
         ready_for_review,
+        review_requested,
         review_request_removed,
       ]
 
@@ -18,7 +19,7 @@ jobs:
     steps:
       - name: Gh-Jira sync action
         id: gh-jira
-        uses: srikar-samudrala/gh-jira-sync@v0.0.7
+        uses: srikar-samudrala/gh-jira-sync@v0.0.8
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JIRA_URL: ${{ secrets.JIRA_URL }}
