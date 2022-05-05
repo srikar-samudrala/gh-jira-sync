@@ -177,12 +177,16 @@ async function run() {
 
 run();
 
-async function callTransitions(arr, ticket_id, transitionsResponse) {
+async function callTransitions(arr, ticket_id) {
   for (const transition of arr) {
+    const transitionsResponse = await jiraObj.fetchJiraTicketTransitions(
+      ticket_id
+    );
     const transition_obj = transitionsResponse.transitions.find(
       (trans) => trans.to.name.toLowerCase() === transition.toLowerCase()
     );
     if (!transition_obj) {
+      console.log('no matching transition found in the loop');
       return;
     }
     await jiraObj.triggerJiraTransition(ticket_id, transition_obj.id);
