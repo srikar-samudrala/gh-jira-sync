@@ -10,11 +10,7 @@ const fetch = require('node-fetch');
 // READY FOR DEV - 10015
 // on hold - 10009
 
-function jira(
-  jiraUrl = 'https://eveworldplatform.atlassian.net',
-  email = 'srikar@eve.world',
-  apiToken = 'seZ8op81mpXWmtgExKPm80D7'
-) {
+function jira(jiraUrl, email, apiToken) {
   const commonPath = '/rest/api/3';
   const auth = Buffer.from(`${email}:${apiToken}`).toString('base64');
 
@@ -42,6 +38,7 @@ function jira(
       return json;
     } catch (err) {
       console.log(err.message);
+      return null;
     }
   };
 

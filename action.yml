@@ -12,6 +12,9 @@ inputs:
     default: false
   JIRA_TOKEN:
     description: API Token of the corresponding jira account
+  JIRA_PROJECT:
+    description: IOS or ANDROID
+    required: true
 runs:
   using: 'node16'
   main: 'dist/index.js'

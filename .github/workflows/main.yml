@@ -21,9 +21,10 @@ jobs:
     steps:
       - name: Gh-Jira sync action
         id: gh-jira
-        uses: srikar-samudrala/gh-jira-sync@v0.0.9
+        uses: srikar-samudrala/gh-jira-sync@v0.0.10
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JIRA_URL: ${{ secrets.JIRA_URL }}
           JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
           JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
+          JIRA_PROJECT: 'ANDROID'
