@@ -14,4 +14,4 @@ inputs:
     description: API Token of the corresponding jira account
 runs:
   using: 'node16'
-  main: 'index.js'
+  main: 'dist/index.js'
