@@ -123,7 +123,9 @@ async function run() {
       return;
     }
 
-    const transitionsResponse = await jiraObj.fetchJiraTransitions(ticket_id);
+    const transitionsResponse = await jiraObj.fetchJiraTicketTransitions(
+      ticket_id
+    );
 
     if (!transitionsResponse || transitionsResponse.transitions.length === 0) {
       core.info('No transitions found. Unable to set status');

@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Gh-Jira sync action
         id: gh-jira
-        uses: srikar-samudrala/gh-jira-sync@v0.0.15
+        uses: srikar-samudrala/gh-jira-sync@v0.0.16
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JIRA_URL: ${{ secrets.JIRA_URL }}
