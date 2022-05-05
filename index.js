@@ -148,7 +148,7 @@ async function run() {
       (transition) =>
         transition.to.name.toLowerCase() === new_jira_status.toLowerCase()
     );
-    if (transition_obj.id) {
+    if (transition_obj && transition_obj.id) {
       await jiraObj.triggerJiraTransition(ticket_id, transition_obj.id);
       core.info(
         `Jira transition triggered: ${current_jira_status} to ${new_jira_status}`
