@@ -33,17 +33,8 @@ function jira(jiraUrl, email, apiToken) {
 
     try {
       const response = await fetch(endPoint, requestPayload);
-      let responseObj = {};
-      if (
-        (response.headers.get('content-type') || '').includes(
-          'application/json'
-        )
-      ) {
-        responseObj = await response.json();
-      } else {
-        responseObj = await response.text();
-      }
-      return responseObj;
+      const json = await response.json();
+      return json;
     } catch (err) {
       console.log(err.message);
       return null;

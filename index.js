@@ -20,6 +20,8 @@ const JIRA_READY_FOR_INTEGRATION = 'READY FOR INTEGRATION';
 const JIRA_DEV_COMPLETE = 'DEV COMPLETE';
 const JIRA_CODE_REVIEW = 'CODE REVIEW';
 const JIRA_UAT_FEATURE_TESTING = 'UAT/FEATURE TESTING';
+const JIRA_NEW = 'NEW';
+const JIRA_TODO = 'TO DO';
 
 const githubToken = core.getInput('GITHUB_TOKEN', { required: true });
 const jiraUrl = core.getInput('JIRA_URL', { required: true });
@@ -32,6 +34,13 @@ const jiraObj = jira(jiraUrl, jiraEmail, jiraToken);
 console.log(Object.keys(github.context.payload));
 console.log('========================');
 console.log(JSON.stringify(github.context.payload, null, 2));
+
+const JIRA_WORKFLOW = {
+  [`${JIRA_DEV_IN_PROGRESS}-${JIRA_CODE_REVIEW}`]: [
+    JIRA_DEV_COMPLETE,
+    JIRA_CODE_REVIEW,
+  ],
+};
 
 async function run() {
   try {
@@ -131,17 +140,32 @@ async function run() {
       core.info('No transitions found. Unable to set status');
       return;
     }
-
+    console.log(
+      'workflow key',
+      `${current_jira_status.toUpperCase()}-${new_jira_status}`
+    );
     const transition_obj = transitionsResponse.transitions.find(
       (transition) =>
         transition.to.name.toLowerCase() === new_jira_status.toLowerCase()
     );
     if (transition_obj.id) {
-      const triggerJiraTransitionRes = await jiraObj.triggerJiraTransition(
-        ticket_id,
-        transition_obj.id
+      await jiraObj.triggerJiraTransition(ticket_id, transition_obj.id);
+      core.info(
+        `Jira transition triggered: ${current_jira_status} to ${new_jira_status}`
       );
-      core.info(`Jira transition triggered: ${triggerJiraTransitionRes}`);
+    } else if (
+      JIRA_WORKFLOW[`${current_jira_status.toUpperCase()}-${new_jira_status}`]
+    ) {
+      const arr =
+        JIRA_WORKFLOW[
+          `${current_jira_status.toUpperCase()}-${new_jira_status}`
+        ];
+      if (arr.length) {
+        await callTransitions(arr, ticket_id, transitionsResponse);
+      } else {
+        core.info('workflow not yet defined on the client side');
+        return;
+      }
     } else {
       core.info('No matching transition id found. Unable to set status');
     }
@@ -152,3 +176,16 @@ async function run() {
 }
 
 run();
+
+async function callTransitions(arr, ticket_id, transitionsResponse) {
+  for (const transition of arr) {
+    const transition_obj = transitionsResponse.transitions.find(
+      (trans) => trans.to.name.toLowerCase() === transition.toLowerCase()
+    );
+    if (!transition_obj) {
+      return;
+    }
+    await jiraObj.triggerJiraTransition(ticket_id, transition_obj.id);
+  }
+  console.log('Done with transition loop');
+}
