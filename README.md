@@ -1,4 +1,4 @@
-# Github Jira Sync Action
+# Github Jira Sync Actiond
 
 This action transitions the Jira status based on the Github labels
 
