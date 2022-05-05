@@ -34,7 +34,6 @@ function jira(jiraUrl, email, apiToken) {
     try {
       const response = await fetch(endPoint, requestPayload);
       const json = await response.json();
-      console.log(json);
       return json;
     } catch (err) {
       console.log(err.message);

@@ -41,7 +41,7 @@ console.log(Object.keys(github.context.payload));
 console.log('========================');
 console.log(JSON.stringify(github.context.payload, null, 2));
 
-function run() {
+async function run() {
   try {
     const action = github.context.payload.action;
     const pull_request = github.context.payload.pull_request;
@@ -116,7 +116,7 @@ function run() {
 
     core.info(`New status change: ${new_jira_status}`);
 
-    const ticket_obj = jiraObj.fetchJiraTicket(ticket_id);
+    const ticket_obj = await jiraObj.fetchJiraTicket(ticket_id);
 
     if (!ticket_obj) {
       core.info('No ticket found');
