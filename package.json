@@ -4,9 +4,25 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "ncc build index.js -o dist -m",
+    "dev": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/srikar-samudrala/gh-jira-sync.git"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/srikar-samudrala/gh-jira-sync/issues"
+  },
+  "homepage": "https://github.com/srikar-samudrala/gh-jira-sync#readme",
+  "dependencies": {
+    "@actions/core": "^1.7.0",
+    "@actions/github": "^5.0.1",
+    "@vercel/ncc": "^0.33.4",
+    "node-fetch": "2.6.0"
+  }
 }

@@ -1,0 +1,17 @@
+name: 'Github Jira sync action'
+description: 'Transitions jira status based on github labels'
+inputs:
+  GITHUB_TOKEN:
+    description: Github token
+    required: true
+  JIRA_URL:
+    description: Jira domain of your organization
+    required: true
+  JIRA_EMAIL:
+    description: Email id used for the Jira account
+    default: false
+  JIRA_TOKEN:
+    description: API Token of the corresponding jira account
+runs:
+  using: 'node17'
+  main: 'dist/index.js'
