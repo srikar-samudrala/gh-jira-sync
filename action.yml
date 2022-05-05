@@ -13,5 +13,5 @@ inputs:
   JIRA_TOKEN:
     description: API Token of the corresponding jira account
 runs:
-  using: 'node17'
-  main: 'dist/index.js'
+  using: 'node16'
+  main: 'index.js'
