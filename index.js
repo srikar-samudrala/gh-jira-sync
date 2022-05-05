@@ -81,16 +81,19 @@ function run() {
         // if the PR is closed and not merged,
         // then set the new status to In Progress
         if (
-          !matching_labels.includes(GH_DEV_APPROVED) &&
-          !matching_labels.includes(GH_QC_APPROVED) &&
-          review.state === 'changes_requested' &&
-          !pull_request.merged_at
+          !(
+            matching_labels.includes(GH_DEV_APPROVED) ||
+            matching_labels.includes(GH_QC_APPROVED) ||
+            pull_request.merged_at
+          ) ||
+          review.state === 'changes_requested'
         ) {
           new_jira_status = JIRA_DEV_IN_PROGRESS;
         }
         break;
       default:
         new_jira_status = '';
+        break;
     }
 
     if (new_jira_status === '') {
