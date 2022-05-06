@@ -7,7 +7,7 @@ function getJiraTransitionObj(transitionsResponse, transition) {
   );
 }
 
-async function callTransitions(arr, ticket_id) {
+async function callTransitions(jiraObj, arr, ticket_id) {
   const callTransitionsLogger = createLogger('callTransitions');
   for (const transition of arr) {
     const transitionsResponse = await jiraObj.fetchJiraTicketTransitions(
@@ -68,7 +68,7 @@ async function performJiraTransition(
     const arr =
       JIRA_WORKFLOW[`${current_jira_status.toUpperCase()}-${new_jira_status}`];
 
-    await callTransitions(arr, ticket_id, transitionsResponse);
+    await callTransitions(jiraObj, arr, ticket_id, transitionsResponse);
   } else {
     core.info(
       performJiraTransitionLogger(

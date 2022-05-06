@@ -30,9 +30,9 @@ const JIRA_WORKFLOW = {
 };
 
 async function run() {
+  const runLogger = createLogger('run');
   try {
     // creates all the required variables from github context payload
-    const runLogger = createLogger('run');
     const action = github.context.payload.action;
     const pull_request = github.context.payload.pull_request;
     const review =
