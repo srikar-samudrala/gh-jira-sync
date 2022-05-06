@@ -1,4 +1,6 @@
 const fetch = require('node-fetch');
+const core = require('@actions/core');
+const { createLogger } = require('./createLogger');
 
 // Dev in progress - 10016
 // Development Complete - 41
@@ -11,6 +13,7 @@ const fetch = require('node-fetch');
 // on hold - 10009
 
 function jira(jiraUrl, email, apiToken) {
+  const jiraLogger = createLogger('Jira');
   const commonPath = '/rest/api/3';
   const auth = Buffer.from(`${email}:${apiToken}`).toString('base64');
 
@@ -36,7 +39,7 @@ function jira(jiraUrl, email, apiToken) {
       const json = await response.json();
       return json;
     } catch (err) {
-      console.log(err.message);
+      core.info(jiraLogger(err.message));
       return null;
     }
   };
