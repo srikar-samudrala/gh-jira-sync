@@ -10,7 +10,8 @@ This action transitions the Jira status based on the Github labels
 
 ### `TRIAL_RUN`
 
-flag for trial run. No merge will happen, just logs the result.
+flag for trial run. No merge will happen, just logs the 
+result.
 
 ### `COMMIT_MESSAGE`
 
