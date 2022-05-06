@@ -121,7 +121,8 @@ async function run() {
       new_jira_status,
       current_jira_status,
       transitionsResponse,
-      JIRA_WORKFLOW
+      JIRA_WORKFLOW,
+      ticket_id
     );
   } catch (err) {
     core.info(runLogger(`Error: ${err.message}`));

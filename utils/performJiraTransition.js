@@ -36,7 +36,8 @@ async function performJiraTransition(
   new_jira_status,
   current_jira_status,
   transitionsResponse,
-  JIRA_WORKFLOW
+  JIRA_WORKFLOW,
+  ticket_id
 ) {
   const performJiraTransitionLogger = createLogger('performJiraTransition');
 
