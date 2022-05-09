@@ -18,17 +18,6 @@ const jiraProject = core.getInput('JIRA_PROJECT', { required: true });
 // creates an instance Jira obj for interacting with Jira server
 const jiraObj = jira(jiraUrl, jiraEmail, jiraToken);
 
-// Few transitions are not possible to achieve in one state change.
-// there might be possibilty that for moving to the new status, we might need to
-// perform multiple state transitions. This JIRA_WORKFLOW helps us in defining the
-// intermittent states for us to achieve this transtion
-const JIRA_WORKFLOW = {
-  [`${CONSTANTS.JIRA_DEV_IN_PROGRESS}-${CONSTANTS.JIRA_CODE_REVIEW}`]: [
-    CONSTANTS.JIRA_DEV_COMPLETE,
-    CONSTANTS.JIRA_CODE_REVIEW,
-  ],
-};
-
 async function run() {
   const runLogger = createLogger('run');
   try {
@@ -121,7 +110,6 @@ async function run() {
       new_jira_status,
       current_jira_status,
       transitionsResponse,
-      JIRA_WORKFLOW,
       ticket_id
     );
   } catch (err) {

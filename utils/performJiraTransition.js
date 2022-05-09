@@ -1,5 +1,8 @@
-const { createLogger } = require('./createLogger');
 const core = require('@actions/core');
+
+const { generateTransitionFlow } = require('./generateTransitionFlow');
+const { createLogger } = require('./createLogger');
+const workflow = require('../workflow.json');
 
 function getJiraTransitionObj(transitionsResponse, transition) {
   return transitionsResponse.transitions.find(
@@ -36,7 +39,6 @@ async function performJiraTransition(
   new_jira_status,
   current_jira_status,
   transitionsResponse,
-  JIRA_WORKFLOW,
   ticket_id
 ) {
   const performJiraTransitionLogger = createLogger('performJiraTransition');
@@ -63,12 +65,14 @@ async function performJiraTransition(
     // this block checks the same by checking whether we have the workflow defined
     // for doing this multi-step transition. if not then ignore the transition
   } else if (
-    JIRA_WORKFLOW[`${current_jira_status.toUpperCase()}-${new_jira_status}`]
+    generateTransitionFlow(
+      getTransitionPair(current_jira_status, new_jira_status)
+    ).length
   ) {
-    const arr =
-      JIRA_WORKFLOW[`${current_jira_status.toUpperCase()}-${new_jira_status}`];
-
-    await callTransitions(jiraObj, arr, ticket_id, transitionsResponse);
+    const arr = generateTransitionFlow(
+      getTransitionPair(current_jira_status, new_jira_status)
+    );
+    await callTransitions(jiraObj, arr, ticket_id);
   } else {
     core.info(
       performJiraTransitionLogger(
@@ -76,6 +80,24 @@ async function performJiraTransition(
       )
     );
   }
+}
+
+function getTransitionPair(current, target) {
+  const getTransitionPairLogger = createLogger('getTransitionPair');
+  const statuses = workflow.layout.statuses;
+  const pair = [];
+
+  statuses.forEach((status) => {
+    if (status.name.toLowerCase() === current.toLowerCase()) {
+      pair[0] = status.id;
+    } else if (status.name.toLowerCase() === target.toLowerCase()) {
+      pair[1] = status.id;
+    }
+  });
+
+  core.info(getTransitionPairLogger(`TransitionPair => ${pair}`));
+
+  return pair;
 }
 
 module.exports = {
