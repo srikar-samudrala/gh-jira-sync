@@ -16,8 +16,10 @@ function jira(jiraUrl, email, apiToken) {
   const jiraLogger = createLogger('Jira');
   const commonPath = '/rest/api/3';
   const auth = Buffer.from(`${email}:${apiToken}`).toString('base64');
+  let workflow = {};
 
   const jiraConnect = async ({
+    url,
     pathname,
     method = 'GET',
     body,
@@ -26,8 +28,7 @@ function jira(jiraUrl, email, apiToken) {
       Authorization: `Basic ${auth}`,
     },
   }) => {
-    const endPoint = new URL(pathname, jiraUrl);
-
+    const endPoint = url ? url : new URL(pathname, jiraUrl);
     const requestPayload = {
       method,
       body: body ? JSON.stringify(body) : undefined,
@@ -66,6 +67,25 @@ function jira(jiraUrl, email, apiToken) {
         method: 'POST',
         body,
       });
+    },
+    fetchWorkflow: async (name) => {
+      if (Object.keys(workflow).length > 0) {
+        return workflow;
+      } else {
+        const headers = {
+          'Content-Type': 'application/json',
+          Authorization: `Basic ${auth}`,
+          'X-Atlassian-Token': 'no-check',
+        };
+        workflow = await jiraConnect({
+          url: new URL(
+            `rest/workflowDesigner/latest/workflows?name=${name}&draft=false`,
+            jiraUrl
+          ),
+          headers,
+        });
+        return workflow;
+      }
     },
   };
 }

@@ -2,7 +2,6 @@ const core = require('@actions/core');
 
 const { generateTransitionFlow } = require('./generateTransitionFlow');
 const { createLogger } = require('./createLogger');
-const workflow = require('../workflow.json');
 
 function getJiraTransitionObj(transitionsResponse, transition) {
   return transitionsResponse.transitions.find(
@@ -39,7 +38,8 @@ async function performJiraTransition(
   new_jira_status,
   current_jira_status,
   transitionsResponse,
-  ticket_id
+  ticket_id,
+  jiraWorkflowName
 ) {
   const performJiraTransitionLogger = createLogger('performJiraTransition');
 
@@ -64,27 +64,37 @@ async function performJiraTransition(
     // multiple transitions to be done in between.
     // this block checks the same by checking whether we have the workflow defined
     // for doing this multi-step transition. if not then ignore the transition
-  } else if (
-    generateTransitionFlow(
-      getTransitionPair(current_jira_status, new_jira_status)
-    ).length
-  ) {
-    const arr = generateTransitionFlow(
-      getTransitionPair(current_jira_status, new_jira_status)
-    );
-    await callTransitions(jiraObj, arr, ticket_id);
   } else {
-    core.info(
-      performJiraTransitionLogger(
-        'No matching transition id found or workflow found. Unable to set status'
-      )
+    // fetches jira workflow based on the ticket type
+    const jiraWorkflow = await jiraObj.fetchWorkflow(jiraWorkflowName);
+    if (!Object.keys(jiraWorkflow).length) {
+      core.info(
+        performJiraTransitionLogger(
+          'Unable to fetch Jira workflow hence cancelling jira state transition'
+        )
+      );
+      return;
+    }
+    const arr = generateTransitionFlow(
+      getTransitionPair(current_jira_status, new_jira_status, jiraWorkflow),
+      jiraWorkflow
     );
+
+    if (arr.length) {
+      await callTransitions(jiraObj, arr, ticket_id);
+    } else {
+      core.info(
+        performJiraTransitionLogger(
+          'No matching transition id found or workflow found. Unable to set status'
+        )
+      );
+    }
   }
 }
 
-function getTransitionPair(current, target) {
+function getTransitionPair(current, target, jiraWorkflow) {
   const getTransitionPairLogger = createLogger('getTransitionPair');
-  const statuses = workflow.layout.statuses;
+  const statuses = jiraWorkflow.layout.statuses;
   const pair = [];
 
   statuses.forEach((status) => {

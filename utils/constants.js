@@ -4,6 +4,7 @@ const JIRA_READY_FOR_INTEGRATION = 'READY FOR INTEGRATION';
 const JIRA_DEV_COMPLETE = 'DEV COMPLETE';
 const JIRA_CODE_REVIEW = 'CODE REVIEW';
 const JIRA_UAT_FEATURE_TESTING = 'UAT/FEATURE TESTING';
+const JIRA_UAT = 'UAT';
 const JIRA_NEW = 'NEW';
 const JIRA_TODO = 'TO-DO';
 const GH_READY_FOR_REVIEW = 'Ready for Review';
@@ -17,6 +18,18 @@ const GH_LABELS = [
   GH_QC_APPROVED,
 ];
 
+const JIRA_TICKET_TYPE = {
+  TASK: 'Task',
+  ['SUB-TASK']: 'Sub-task',
+  BUG: 'Bug',
+};
+
+const WORKFLOW_NAME = {
+  [JIRA_TICKET_TYPE.TASK]: 'Eve-IOS-ANDROID-Workflow-v3',
+  [JIRA_TICKET_TYPE.BUG]: 'Eve-QA-Defect-Workflow-v4',
+  [JIRA_TICKET_TYPE['SUB-TASK']]: 'Eve-IOS-ANDROID-Subtask-Workflow-v1',
+};
+
 module.exports = {
   JIRA_DEV_IN_PROGRESS,
   JIRA_READY_FOR_DEV,
@@ -24,6 +37,7 @@ module.exports = {
   JIRA_DEV_COMPLETE,
   JIRA_CODE_REVIEW,
   JIRA_UAT_FEATURE_TESTING,
+  JIRA_UAT,
   JIRA_NEW,
   JIRA_TODO,
   GH_READY_FOR_REVIEW,
@@ -31,4 +45,6 @@ module.exports = {
   GH_DEV_APPROVED,
   GH_QC_APPROVED,
   GH_LABELS,
+  JIRA_TICKET_TYPE,
+  WORKFLOW_NAME,
 };

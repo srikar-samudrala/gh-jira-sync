@@ -2,12 +2,11 @@ const core = require('@actions/core');
 
 const { createLogger } = require('./createLogger');
 const { getStatusName } = require('./getStatusName');
-const workflow = require('../workflow.json');
 
 const transitions = [];
 const generateTransitionFlowLogger = createLogger('generateTransitionFlow');
 
-function generateTransitionFlow(transitionPair) {
+function generateTransitionFlow(transitionPair, jiraWorkflow) {
   try {
     if (transitionPair && transitionPair.length < 2) {
       core.info(
@@ -17,12 +16,13 @@ function generateTransitionFlow(transitionPair) {
       );
       return [];
     }
-    generateTransitions();
+    generateTransitions(jiraWorkflow);
     const targetSourceDestinationPair = transitionPair;
 
     let sourcePairs = [];
     let destinationPairs = [];
     let count = 0;
+    let loopCount = 0;
 
     sourcePairs.push(
       findPairsWithThisSourceOrDestination(targetSourceDestinationPair[0], 0)
@@ -43,13 +43,13 @@ function generateTransitionFlow(transitionPair) {
 
     if (intersections.length) {
       const flow = [
-        getStatusName(intersections[0]),
-        getStatusName(targetSourceDestinationPair[1]),
+        getStatusName(intersections[0], jiraWorkflow),
+        getStatusName(targetSourceDestinationPair[1], jiraWorkflow),
       ];
       return flow;
     } else {
       let intersections = [];
-      while (!intersections.length) {
+      while (!intersections.length && loopCount < 50) {
         const recursiveOutput = verifyRecursively(
           sourcePairs[count],
           destinationPairs[0]
@@ -57,6 +57,7 @@ function generateTransitionFlow(transitionPair) {
         intersections = [...recursiveOutput[1]];
         sourcePairs.push(recursiveOutput[0]);
         count++;
+        loopCount++;
       }
 
       // after finding the intersection, check which destination in sourcePair matches
@@ -84,7 +85,7 @@ function generateTransitionFlow(transitionPair) {
 
       const finalTransitionFlow = path.reverse().map(
         (flowStatus) =>
-          workflow.layout.statuses.filter((layoutStatus) => {
+          jiraWorkflow.layout.statuses.filter((layoutStatus) => {
             return layoutStatus.id === flowStatus;
           })[0].name
       );
@@ -123,8 +124,8 @@ function getSourceAndDestination(str) {
   return arr;
 }
 
-function generateTransitions() {
-  const ids = workflow.layout.transitions;
+function generateTransitions(jiraWorkflow) {
+  const ids = jiraWorkflow.layout.transitions;
   ids.forEach((transition) => {
     const arr = getSourceAndDestination(transition.id);
     transitions.push(arr);

@@ -51,6 +51,30 @@ async function run() {
     core.info(runLogger(`Ticket id => ${ticket_id}`));
     core.info(runLogger(`Is the PR merged yet? => ${isPRMergedYet}`));
 
+    // Fetches the Jira ticket object using ticket ID
+    const ticket_obj = await jiraObj.fetchJiraTicket(ticket_id);
+
+    if (!ticket_obj) {
+      core.info(runLogger('No ticket found'));
+      return;
+    }
+
+    const ticketType = ticket_obj.fields.issuetype.name;
+    core.info(runLogger(ticketType));
+
+    // Stop going further if ticket is not of type task or bug
+    if (
+      ![
+        CONSTANTS.JIRA_TICKET_TYPE.BUG,
+        CONSTANTS.JIRA_TICKET_TYPE.TASK,
+      ].includes(ticketType)
+    ) {
+      core.info(
+        runLogger('Currently supports only tickets of type "Task" and "Bug"')
+      );
+      return;
+    }
+
     // this provides us a new status if and only if this action
     // is triggered by PR state change (like open, close, changes requested etc..,)
     let new_jira_status = getStatusFromPRState(
@@ -63,7 +87,7 @@ async function run() {
     // if the action is not triggered due to the change in PR status
     // as mentioned above, then assign the new status based on the labels
     if (new_jira_status === '') {
-      new_jira_status = getStatusFromPRLabels(matching_labels);
+      new_jira_status = getStatusFromPRLabels(matching_labels, ticketType);
     }
 
     if (new_jira_status === '') {
@@ -71,13 +95,7 @@ async function run() {
       return;
     }
 
-    // Fetches the Jira ticket object using ticket ID
-    const ticket_obj = await jiraObj.fetchJiraTicket(ticket_id);
-
-    if (!ticket_obj) {
-      core.info(runLogger('No ticket found'));
-      return;
-    }
+    const jiraWorkflowName = CONSTANTS.WORKFLOW_NAME[ticketType];
 
     let current_jira_status = ticket_obj.fields.status.name;
     core.info(runLogger(`Current status => ${current_jira_status}`));
@@ -110,7 +128,8 @@ async function run() {
       new_jira_status,
       current_jira_status,
       transitionsResponse,
-      ticket_id
+      ticket_id,
+      jiraWorkflowName
     );
   } catch (err) {
     core.info(runLogger(`Error: ${err.message}`));
