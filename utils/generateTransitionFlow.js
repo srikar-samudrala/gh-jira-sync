@@ -89,7 +89,7 @@ function generateTransitionFlow(transitionPair) {
           })[0].name
       );
       core.info(generateTransitionFlowLogger(finalTransitionFlow));
-      return finalTransitionFlow;
+      return finalTransitionFlow.slice(1);
     }
   } catch (err) {
     core.info(generateTransitionFlowLogger(err.message));
