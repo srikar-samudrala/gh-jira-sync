@@ -18,7 +18,7 @@ Message to be used while merging!
 
 ## Example usage
 
-```
+```ad
 uses: srikarsams/rebase@v1.0
   with:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
