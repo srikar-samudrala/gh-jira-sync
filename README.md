@@ -16,6 +16,8 @@ flag for trial run. No merge will happen, just logs the result.
 
 Message to be used while merging!
 
+s
+
 ## Example usage
 
 ```
