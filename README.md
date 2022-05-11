@@ -7,7 +7,7 @@ This action transitions the Jira status based on the Github labels
 ### `GITHUB_ACTION`
 
 **Required**
-
+adf
 ### `TRIAL_RUN`
 
 flag for trial run. No merge will happen, just logs the result.
