@@ -20,8 +20,8 @@ const GH_LABELS = [
 
 const JIRA_TICKET_TYPE = {
   TASK: 'Task',
-  ['SUB-TASK']: 'Sub-task',
   BUG: 'Bug',
+  STORY: 'Story',
 };
 
 const WORKFLOW_NAME = {

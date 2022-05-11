@@ -32,7 +32,7 @@ async function run() {
       labels.includes(label)
     );
     const isPRMergedYet = pull_request.merged;
-
+    core.info(JSON.stringify(pull_request, null, 2));
     // Fail the action if the PR title doesn't exist
     if (!pr_title) {
       core.info(runLogger('PR title is empty'));
@@ -63,14 +63,11 @@ async function run() {
     core.info(runLogger(ticketType));
 
     // Stop going further if ticket is not of type task or bug
-    if (
-      ![
-        CONSTANTS.JIRA_TICKET_TYPE.BUG,
-        CONSTANTS.JIRA_TICKET_TYPE.TASK,
-      ].includes(ticketType)
-    ) {
+    if (!Object.values(CONSTANTS.JIRA_TICKET_TYPE).includes(ticketType)) {
       core.info(
-        runLogger('Currently supports only tickets of type "Task" and "Bug"')
+        runLogger(
+          'Currently supports only tickets of type "Story", "Task" and "Bug"'
+        )
       );
       return;
     }
