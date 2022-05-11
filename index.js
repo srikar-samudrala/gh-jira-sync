@@ -32,7 +32,7 @@ async function run() {
       labels.includes(label)
     );
     const isPRMergedYet = pull_request.merged;
-    core.info(JSON.stringify(pull_request, null, 2));
+    core.info(JSON.stringify(github.context.payload, null, 2));
     // Fail the action if the PR title doesn't exist
     if (!pr_title) {
       core.info(runLogger('PR title is empty'));

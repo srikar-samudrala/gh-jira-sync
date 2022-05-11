@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Gh-Jira sync action
         id: gh-jira
-        uses: srikar-samudrala/gh-jira-sync@v0.0.27
+        uses: srikar-samudrala/gh-jira-sync@v0.0.28
         with:
           JIRA_URL: ${{ secrets.JIRA_URL }}
           JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
