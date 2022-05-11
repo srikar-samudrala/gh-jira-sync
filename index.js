@@ -26,13 +26,6 @@ async function run() {
     // creates all the required variables from github context payload
     const action = github.context.payload.action;
     const pull_request = github.context.payload.pull_request;
-    console.log(
-      await octokit.rest.pulls.listReviews({
-        owner: 'srikar-samudrala',
-        repo: 'gh-jira-sync',
-        pull_number: 35,
-      })
-    );
     const review =
       (github.context.payload && github.context.payload.review) || {};
     const pr_title = pull_request.title;
@@ -93,7 +86,16 @@ async function run() {
     // if the action is not triggered due to the change in PR status
     // as mentioned above, then assign the new status based on the labels
     if (new_jira_status === '') {
-      new_jira_status = getStatusFromPRLabels(matching_labels, ticketType);
+      new_jira_status = getStatusFromPRLabels(
+        async () =>
+          await octokit.rest.pulls.listReviews({
+            owner: 'srikar-samudrala',
+            repo: 'gh-jira-sync',
+            pull_number: 35,
+          }),
+        matching_labels,
+        ticketType
+      );
     }
 
     if (new_jira_status === '') {

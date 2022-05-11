@@ -2,7 +2,11 @@ const core = require('@actions/core');
 const { createLogger } = require('./createLogger');
 const CONSTANTS = require('./constants');
 
-function getStatusFromPRLabels(matching_labels, ticketType) {
+async function getStatusFromPRLabels(
+  fetchReviews,
+  matching_labels,
+  ticketType
+) {
   const getStatusFromPRLabelsLogger = createLogger('getStatusFromPRLabels');
   let status = '';
 
@@ -11,6 +15,28 @@ function getStatusFromPRLabels(matching_labels, ticketType) {
   } else if (matching_labels.includes(CONSTANTS.GH_WORK_IN_PROGRESS)) {
     status = CONSTANTS.JIRA_DEV_IN_PROGRESS;
   } else if (matching_labels.includes(CONSTANTS.GH_DEV_APPROVED)) {
+    const reviews = await fetchReviews();
+    if (!reviews.data.length) {
+      core.info(
+        getStatusFromPRLabelsLogger(
+          "Dev Approved label applied but PR doesn't have necessary approvals"
+        )
+      );
+      return;
+    }
+    const isApproved =
+      reviews.data.filter((review) => {
+        review.state === 'APPROVED';
+      }).length >= 2;
+
+    if (!isApproved) {
+      core.info(
+        getStatusFromPRLabelsLogger(
+          "Dev Approved label applied but PR doesn't have necessary approvals"
+        )
+      );
+      return;
+    }
     status =
       ticketType === CONSTANTS.JIRA_TICKET_TYPE.BUG
         ? CONSTANTS.JIRA_UAT
