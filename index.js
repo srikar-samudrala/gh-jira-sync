@@ -27,7 +27,7 @@ async function run() {
     const action = github.context.payload.action;
     const pull_request = github.context.payload.pull_request;
     console.log(
-      await octokit.pulls.listRequestedReviewers({
+      await octokit.rest.pulls.listRequestedReviewers({
         owner: 'srikar-samudrala',
         repo: 'gh-jira-sync',
         pull_number: 35,
