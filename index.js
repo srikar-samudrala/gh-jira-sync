@@ -86,7 +86,7 @@ async function run() {
     // if the action is not triggered due to the change in PR status
     // as mentioned above, then assign the new status based on the labels
     if (new_jira_status === '') {
-      new_jira_status = getStatusFromPRLabels(
+      new_jira_status = await getStatusFromPRLabels(
         async () =>
           await octokit.rest.pulls.listReviews({
             owner: 'srikar-samudrala',

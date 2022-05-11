@@ -22,7 +22,7 @@ async function getStatusFromPRLabels(
           "Dev Approved label applied but PR doesn't have necessary approvals"
         )
       );
-      return;
+      return status;
     }
     const isApproved =
       reviews.data.filter((review) => {
@@ -35,7 +35,7 @@ async function getStatusFromPRLabels(
           "Dev Approved label applied but PR doesn't have necessary approvals"
         )
       );
-      return;
+      return status;
     }
     status =
       ticketType === CONSTANTS.JIRA_TICKET_TYPE.BUG
