@@ -25,10 +25,14 @@ async function run() {
   try {
     // creates all the required variables from github context payload
     const action = github.context.payload.action;
-    console.log(
-      await octokit.pull_request_reviews('srikar-samudrala/gh-jira-sync', 33)
-    );
     const pull_request = github.context.payload.pull_request;
+    console.log(
+      await octokit.pulls.listRequestedReviewers({
+        owner: 'srikar-samudrala',
+        repo: 'gh-jira-sync',
+        pull_number: 35,
+      })
+    );
     const review =
       (github.context.payload && github.context.payload.review) || {};
     const pr_title = pull_request.title;
