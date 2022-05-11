@@ -15,7 +15,7 @@ flag for trial run. No merge will happen, just logs the result.
 ### `COMMIT_MESSAGE`
 
 Message to be used while merging!
-
+dafss
 ## Example usage
 
 ```
