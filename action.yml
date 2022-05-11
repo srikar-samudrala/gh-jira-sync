@@ -1,6 +1,9 @@
 name: 'Github Jira sync action'
 description: 'Transitions jira status based on github labels'
 inputs:
+  GITHUB_TOKEN:
+    description: Github token
+    required: true
   JIRA_URL:
     description: Jira domain of your organization
     required: true

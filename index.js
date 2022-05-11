@@ -14,15 +14,20 @@ const jiraUrl = core.getInput('JIRA_URL', { required: true });
 const jiraEmail = core.getInput('JIRA_EMAIL', { required: true });
 const jiraToken = core.getInput('JIRA_TOKEN', { required: true });
 const jiraProject = core.getInput('JIRA_PROJECT', { required: true });
+const githubToken = core.getInput('GITHUB_TOKEN', { required: true });
 
 // creates an instance Jira obj for interacting with Jira server
 const jiraObj = jira(jiraUrl, jiraEmail, jiraToken);
+const octokit = new github.getOctokit(githubToken);
 
 async function run() {
   const runLogger = createLogger('run');
   try {
     // creates all the required variables from github context payload
     const action = github.context.payload.action;
+    console.log(
+      await octokit.pull_request_reviews('srikar-samudrala/gh-jira-sync', 33)
+    );
     const pull_request = github.context.payload.pull_request;
     const review =
       (github.context.payload && github.context.payload.review) || {};
