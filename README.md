@@ -12,7 +12,7 @@ This action transitions the Jira status based on the Github labels
 
 flag for trial run. No merge will happen, just logs the result.
 
-### `COMMIT_MESSAGE`
+### `COMMIT_MESSAGE`adf
 
 Message to be used while merging!
 
