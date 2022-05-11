@@ -20,7 +20,7 @@ Message to be used while merging!
 
 ```
 uses: srikarsams/rebase@v1.0
-  with:
+  with:adfas
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   COMMIT_MESSAGE: "Rebase done successfully!"
 ```
