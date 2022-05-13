@@ -16,7 +16,7 @@ flag for trial run. No merge will happen, just logs the result.
 
 Message to be used while merging!
 
-## Example usage
+## Example usageadf
 
 ```
 uses: srikarsams/rebase@v1.0
